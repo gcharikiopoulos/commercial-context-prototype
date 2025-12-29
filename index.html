@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>From Quote to Invoice: Deterministic Billing at LILT</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>From Quote to Invoice: Deterministic Billing at LILT</h1>
+      <p>
+        A conceptual model showing how a Commercial Context links account, opportunity,
+        and pricing to make quoting and invoicing deterministic.
+      </p>
+    </header>
+
+    <div class="presentation-nav" aria-label="Section navigation">
+      <button id="nav-prev" type="button" aria-label="Previous section">&larr;</button>
+      <button id="nav-next" type="button" aria-label="Next section">&rarr;</button>
+    </div>
+
+    <main>
+      <section aria-labelledby="lifecycle-flow">
+        <h2 id="lifecycle-flow">Lifecycle Flow</h2>
+        <div class="lifecycle-steps" role="list" aria-label="Lifecycle steps">
+          <div class="lifecycle-step" role="listitem" data-step="opportunity">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>SFDC Opportunity</h3>
+              <p>Sales identifies the deal and expected commercial terms.</p>
+            </div>
+          </div>
+          <div class="lifecycle-step" role="listitem" data-step="commercial-context">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Commercial Context</h3>
+              <p>Account, opportunity, and pricing are copied into a frozen snapshot.</p>
+            </div>
+          </div>
+          <div class="lifecycle-step" role="listitem" data-step="project">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>LILT Project</h3>
+              <p>Work begins using the pre-defined commercial linkage.</p>
+            </div>
+          </div>
+          <div class="lifecycle-step" role="listitem" data-step="usage">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Usage</h3>
+              <p>Delivery events and units are captured against the project.</p>
+            </div>
+          </div>
+          <div class="lifecycle-step" role="listitem" data-step="invoice">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Invoice</h3>
+              <p>Billing is generated directly from usage and agreed terms.</p>
+            </div>
+          </div>
+        </div>
+        <aside aria-live="polite">
+          <h3>Lifecycle Detail</h3>
+          <p id="lifecycle-detail">Select a step to see what happens at that point.</p>
+        </aside>
+      </section>
+
+      <section aria-labelledby="commercial-context">
+        <h2 id="commercial-context">Commercial Context</h2>
+        <article id="context-card">
+          <h3>Commercial Context Lineage</h3>
+          <div class="cc-visual">
+            <div class="account-spine">
+              <div class="account-label">
+                <span>Salesforce Account</span>
+                <strong id="account-name">Account Name</strong>
+              </div>
+              <div class="spine-line" aria-hidden="true"></div>
+              <p class="spine-note">Single-account determinism from opportunities to projects.</p>
+            </div>
+            <div class="cc-visual-grid">
+              <section class="opportunity-column">
+                <h4>Opportunities (<span class="column-note">Closed Won opportunities define commercial meaning.</span>)</h4>
+                <div id="opportunity-cards" class="card-stack" role="list"></div>
+              </section>
+              <section class="context-column">
+                <h4>Commercial Context Versions (<span class="column-note">Only one CC is active at a time. New opps create new versions.</span>)</h4>
+                <div id="cc-versions" class="card-stack" role="list"></div>
+              </section>
+            </div>
+            <div class="billing-assertion">
+              <p>
+                <strong>Billing determinism:</strong> Billing reads only from
+                Usage + the active CC snapshot. Projects do not talk to Opportunities at billing time.
+              </p>
+              <p id="lineage-text">Derived from Opp-1. Used for lineage, not billing execution.</p>
+            </div>
+          </div>
+        </article>
+      </section>
+      <section aria-labelledby="usage-invoice-preview">
+        <h2 id="usage-invoice-preview">Usage and Invoice Preview</h2>
+
+        <article>
+          <h3>Usage Events (Placeholder)</h3>
+          <table>
+            <caption>Usage events captured against the project</caption>
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Service</th>
+                <th scope="col">Units</th>
+                <th scope="col">Rate</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="usage-rows"></tbody>
+          </table>
+        </article>
+
+        <article>
+          <h3>Invoice Line Items (Placeholder)</h3>
+          <table>
+            <caption>Invoice preview derived from usage and commitments</caption>
+            <thead>
+              <tr>
+                <th scope="col">Line Item</th>
+                <th scope="col">Description</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Total</th>
+                <th scope="col">Source</th>
+              </tr>
+            </thead>
+            <tbody id="invoice-rows"></tbody>
+          </table>
+        </article>
+      </section>
+
+      <section aria-labelledby="scenarios">
+        <h2 id="scenarios">Scenarios</h2>
+        <article data-scenario="multiple-opportunities">
+          <h3>Multiple Opportunities</h3>
+          <p class="scenario-state">Manual today ❌</p>
+        </article>
+        <article data-scenario="mid-period-change">
+          <h3>Mid-period Change</h3>
+          <p class="scenario-state">Manual today ❌</p>
+        </article>
+        <article data-scenario="multi-entity-billing">
+          <h3>Multi-entity Billing</h3>
+          <p class="scenario-state">Manual today ❌</p>
+        </article>
+        <form>
+          <fieldset>
+            <legend>Scenario Toggles (Placeholder)</legend>
+            <label>
+              <input type="checkbox" name="multiple-opportunities" data-scenario-toggle="multiple-opportunities" />
+              Multiple Opportunities
+            </label>
+            <label>
+              <input type="checkbox" name="mid-period-change" data-scenario-toggle="mid-period-change" />
+              Mid-period Change
+            </label>
+            <label>
+              <input type="checkbox" name="multi-entity-billing" data-scenario-toggle="multi-entity-billing" />
+              Multi-entity Billing
+            </label>
+          </fieldset>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>This is a visualization for stakeholder understanding, not a live system.</p>
+    </footer>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

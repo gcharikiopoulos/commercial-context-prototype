@@ -142,62 +142,127 @@ window.mockData = {
       detail: "Generate invoices directly from usage and the pricing terms already agreed."
     }
   ],
-  usageRows: [
+  billingUsageRecords: [
     {
-      date: "2025-01-12",
-      service: "Translation - Standard",
-      units: "12,500 words",
-      rate: "$0.12",
-      amount: "$1,500.00"
+      date: "2025-07-02",
+      service: "Translation",
+      units: "10,000",
+      unitType: "Words"
     },
     {
-      date: "2025-01-18",
-      service: "Review - Legal",
-      units: "35 hours",
-      rate: "$85.00",
-      amount: "$2,975.00"
+      date: "2025-07-02",
+      service: "Machine Translation",
+      units: "20,000",
+      unitType: "Words"
     }
   ],
-  invoiceRows: [
+  usageCaptureEvents: [
     {
-      item: "Usage",
-      description: "Translation volume for January",
-      quantity: "12,500 words",
-      unitPrice: "$0.12",
-      total: "$1,500.00",
-      source: "Usage"
+      timestamp: "2025-03-18 09:14:22",
+      service: "File translation",
+      unitType: "Words",
+      quantity: "8,420",
+      jobId: "Project-ALP-014",
+      customerId: "CUST-2049"
     },
     {
-      item: "Commitment",
-      description: "Monthly platform minimum",
-      quantity: "1",
-      unitPrice: "$5,000.00",
-      total: "$5,000.00",
-      source: "Commitment"
+      timestamp: "2025-03-18 09:16:41",
+      service: "MT request",
+      unitType: "Segments",
+      quantity: "1,240",
+      jobId: "Job-MT-552",
+      customerId: "CUST-2049"
     },
     {
-      item: "Adjustment",
-      description: "One-time credit for onboarding",
-      quantity: "1",
-      unitPrice: "-$500.00",
-      total: "-$500.00",
-      source: "Adjustment"
+      timestamp: "2025-03-18 10:02:07",
+      service: "QA job",
+      unitType: "Pages",
+      quantity: "18",
+      jobId: "QA-7701",
+      customerId: "CUST-2049"
+    },
+    {
+      timestamp: "2025-03-18 10:15:33",
+      service: "API call",
+      unitType: "Requests",
+      quantity: "42",
+      jobId: "API-9118",
+      customerId: "CUST-2049"
+    },
+    {
+      timestamp: "2025-03-18 11:04:02",
+      service: "File translation",
+      unitType: "Words",
+      quantity: "5,300",
+      jobId: "Project-ALP-015",
+      customerId: "CUST-2049"
     }
   ],
-  scenarios: {
-    "multiple-opportunities": {
-      manualText: "Manual today ❌",
-      deterministicText: "Deterministic with context ✅"
+  billingActiveContext: {
+    id: "CC-1003",
+    version: "v3",
+    status: "Active",
+    effectivePeriod: "2025-06-18 to Present",
+    pricingSnapshot: [
+      {
+        sku: "TR-STD",
+        unitPrice: "$0.08",
+        unit: "Word"
+      },
+      {
+        sku: "MT-ADV",
+        unitPrice: "$0.02",
+        unit: "Word"
+      }
+    ]
+  },
+  billingCharges: [
+    {
+      chargeType: "TR-STD",
+      usageReference: "Translation",
+      quantity: "10,000 words",
+      unitPrice: "$0.08",
+      amount: "$800.00",
+      pricingSource: "CC v3"
     },
-    "mid-period-change": {
-      manualText: "Manual today ❌",
-      deterministicText: "Deterministic with context ✅"
-    },
-    "multi-entity-billing": {
-      manualText: "Manual today ❌",
-      deterministicText: "Deterministic with context ✅"
+    {
+      chargeType: "MT-ADV",
+      usageReference: "Machine Translation",
+      quantity: "20,000 words",
+      unitPrice: "$0.02",
+      amount: "$400.00",
+      pricingSource: "CC v3"
     }
+  ],
+  billRun: {
+    id: "BR-2025-01",
+    period: "Jan 1 - Jan 31, 2025",
+    cadence: "Monthly",
+    entity: "Lilt, Inc.",
+    status: "Preview"
+  },
+  invoicePreview: {
+    number: "INV-2025-01 (Preview)",
+    date: "Feb 2, 2025",
+    customer: "Apex Global Holdings",
+    entity: "Lilt, Inc.",
+    lineItems: [
+      {
+        item: "Translation",
+        description: "Translation charge (TR-STD)",
+        quantity: "10,000 words",
+        unitPrice: "$0.08",
+        lineTotal: "$800.00"
+      },
+      {
+        item: "Machine Translation",
+        description: "MT charge (MT-ADV)",
+        quantity: "20,000 words",
+        unitPrice: "$0.02",
+        lineTotal: "$400.00"
+      }
+    ],
+    subtotal: "$1,200.00",
+    total: "$1,200.00"
   }
 };
-
-

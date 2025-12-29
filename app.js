@@ -338,104 +338,252 @@
     }
   }
 
-  // Render mock usage rows.
-  function populateUsage(rows) {
-    var tbody = document.getElementById("usage-rows");
-    if (!tbody) {
+  function populateBillingUsage(rows) {
+    var tbody = document.getElementById("billing-usage-rows");
+    if (!tbody || !rows) {
       return;
     }
 
     rows.forEach(function (row) {
+      tbody.appendChild(buildRow([row.date, row.service, row.units, row.unitType]));
+    });
+  }
+
+  function populateUsageCaptureEvents(events) {
+    var tbody = document.getElementById("usage-capture-rows");
+    if (!tbody) {
+      return;
+    }
+
+    events.forEach(function (event) {
       tbody.appendChild(
-        buildRow([row.date, row.service, row.units, row.rate, row.amount])
+        buildRow([
+          event.timestamp,
+          event.service,
+          event.unitType,
+          event.quantity,
+          event.jobId,
+          event.customerId
+        ])
       );
     });
   }
 
-  // Render mock invoice rows.
-  function populateInvoices(rows) {
-    var tbody = document.getElementById("invoice-rows");
-    if (!tbody) {
+  function populateBillingContext(context) {
+    var pricingBody = document.getElementById("billing-pricing-rows");
+    if (!context) {
+      return;
+    }
+
+    setText("billing-cc-id", context.id);
+    setText("billing-cc-version", context.version);
+    setText("billing-cc-status", context.status);
+    setText("billing-cc-period", context.effectivePeriod);
+
+    if (pricingBody && context.pricingSnapshot) {
+      context.pricingSnapshot.forEach(function (item) {
+        pricingBody.appendChild(buildRow([item.sku, item.unitPrice, item.unit]));
+      });
+    }
+  }
+
+  function populateBillingCharges(rows) {
+    var tbody = document.getElementById("billing-charge-rows");
+    if (!tbody || !rows) {
       return;
     }
 
     rows.forEach(function (row) {
       tbody.appendChild(
-        buildRow([row.item, row.description, row.quantity, row.unitPrice, row.total, row.source])
+        buildRow([
+          row.chargeType,
+          row.usageReference,
+          row.quantity,
+          row.unitPrice,
+          row.amount,
+          row.pricingSource
+        ])
       );
     });
+  }
+
+  function setBillRunStatus(status) {
+    var normalized = status === "Finalized" ? "Finalized" : "Preview";
+    var toggle = document.getElementById("bill-run-toggle");
+    var invoicePanel = document.getElementById("invoice-preview-panel");
+    var invoiceBadge = document.getElementById("invoice-status-badge");
+
+    setText("bill-run-status", normalized);
+
+    if (toggle) {
+      toggle.textContent = normalized;
+      toggle.setAttribute("aria-pressed", normalized === "Finalized");
+      toggle.classList.toggle("is-finalized", normalized === "Finalized");
+    }
+
+    if (invoiceBadge) {
+      invoiceBadge.textContent =
+        normalized === "Finalized" ? "Finalized (Locked)" : "Preview";
+    }
+
+    if (invoicePanel) {
+      invoicePanel.classList.toggle("is-finalized", normalized === "Finalized");
+    }
+  }
+
+  function wireBillRunToggle(initialStatus) {
+    var toggle = document.getElementById("bill-run-toggle");
+    if (!toggle) {
+      return;
+    }
+
+    var status = initialStatus || "Preview";
+    setBillRunStatus(status);
+
+    toggle.addEventListener("click", function () {
+      status = status === "Preview" ? "Finalized" : "Preview";
+      setBillRunStatus(status);
+    });
+  }
+
+  function populateBillRun(billRun) {
+    if (!billRun) {
+      return;
+    }
+
+    setText("bill-run-id", billRun.id);
+    setText("bill-run-period", billRun.period);
+    setText("bill-run-cadence", billRun.cadence);
+    setText("bill-run-entity", billRun.entity);
+  }
+
+  function populateBillRunCharges(rows, period) {
+    var tbody = document.getElementById("bill-run-charge-rows");
+    if (!tbody || !rows) {
+      return;
+    }
+
+    rows.forEach(function (row, index) {
+      var chargeId = "CHG-" + String(index + 1).padStart(4, "0");
+      var source = row.pricingSource || "Billing Engine";
+      tbody.appendChild(
+        buildRow([
+          chargeId,
+          row.chargeType,
+          row.quantity,
+          row.amount,
+          period || "-",
+          source
+        ])
+      );
+    });
+  }
+
+  function populateInvoicePreview(invoice) {
+    var tbody = document.getElementById("invoice-line-rows");
+    if (!invoice || !tbody) {
+      return;
+    }
+
+    setText("invoice-number", invoice.number);
+    setText("invoice-date", invoice.date);
+    setText("invoice-customer", invoice.customer);
+    setText("invoice-entity", invoice.entity);
+    setText("invoice-subtotal", invoice.subtotal);
+    setText("invoice-total", invoice.total);
+
+    if (invoice.lineItems) {
+      invoice.lineItems.forEach(function (item) {
+        tbody.appendChild(
+          buildRow([
+            item.item,
+            item.description,
+            item.quantity,
+            item.unitPrice,
+            item.lineTotal
+          ])
+        );
+      });
+    }
   }
 
   // Toggle scenario text between manual and deterministic states.
-  function wireScenarioToggles(scenarios) {
-    var toggles = Array.prototype.slice.call(
-      document.querySelectorAll("[data-scenario-toggle]")
-    );
+  
 
-    toggles.forEach(function (toggle) {
-      var scenarioKey = toggle.getAttribute("data-scenario-toggle");
-      var scenarioCard = document.querySelector(
-        "[data-scenario='" + scenarioKey + "']"
-      );
-      var scenarioState = scenarioCard
-        ? scenarioCard.querySelector(".scenario-state")
-        : null;
-
-      function updateScenarioState(isDeterministic) {
-        if (!scenarioCard || !scenarioState) {
-          return;
-        }
-
-        scenarioCard.classList.toggle("is-deterministic", isDeterministic);
-        scenarioState.textContent = isDeterministic
-          ? scenarios[scenarioKey].deterministicText
-          : scenarios[scenarioKey].manualText;
-      }
-
-      updateScenarioState(false);
-
-      toggle.addEventListener("change", function () {
-        updateScenarioState(toggle.checked);
-      });
-    });
-  }
-
-  // Simple left/right navigation between sections.
+  // Dynamic tab navigation derived from section headings.
   function wirePresentationNav() {
     var main = document.querySelector("main");
     var sections = Array.prototype.slice.call(document.querySelectorAll("main > section"));
-    var prevButton = document.getElementById("nav-prev");
-    var nextButton = document.getElementById("nav-next");
-    var index = 0;
+    var tabContainer = document.getElementById("nav-tabs");
+    var buttons = [];
 
-    if (!main || sections.length === 0 || !prevButton || !nextButton) {
+    if (!main || sections.length === 0 || !tabContainer) {
       return;
     }
 
-    function updateButtons() {
-      prevButton.disabled = index === 0;
-      nextButton.disabled = index === sections.length - 1;
+    function clear(node) {
+      while (node.firstChild) {
+        node.removeChild(node.firstChild);
+      }
     }
 
-    function goToSection(newIndex) {
-      index = Math.max(0, Math.min(sections.length - 1, newIndex));
-      main.scrollLeft = sections[index].offsetLeft;
-      updateButtons();
+    function setActive(index) {
+      buttons.forEach(function (button, idx) {
+        button.classList.toggle("is-active", idx === index);
+        button.setAttribute("aria-selected", idx === index ? "true" : "false");
+      });
     }
 
-    prevButton.addEventListener("click", function () {
-      goToSection(index - 1);
-    });
+    function goToSection(index) {
+      var clamped = Math.max(0, Math.min(sections.length - 1, index));
+      main.scrollLeft = sections[clamped].offsetLeft;
+      setActive(clamped);
+    }
 
-    nextButton.addEventListener("click", function () {
-      goToSection(index + 1);
+    function buildTabs() {
+      clear(tabContainer);
+      buttons = sections.map(function (section, idx) {
+        var heading = section.querySelector("h2");
+        var label = heading ? heading.textContent.trim() : "Section " + (idx + 1);
+        var button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        button.setAttribute("role", "tab");
+        button.setAttribute("aria-selected", "false");
+        button.addEventListener("click", function () {
+          goToSection(idx);
+        });
+        tabContainer.appendChild(button);
+        return button;
+      });
+    }
+
+    function syncToScroll() {
+      var scrollLeft = main.scrollLeft;
+      var closestIndex = 0;
+      var closestDistance = Infinity;
+
+      sections.forEach(function (section, idx) {
+        var distance = Math.abs(section.offsetLeft - scrollLeft);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = idx;
+        }
+      });
+
+      setActive(closestIndex);
+    }
+
+    buildTabs();
+    setActive(0);
+
+    main.addEventListener("scroll", function () {
+      window.requestAnimationFrame(syncToScroll);
     });
 
     window.addEventListener("resize", function () {
-      goToSection(index);
+      syncToScroll();
     });
-
-    updateButtons();
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -446,9 +594,17 @@
 
     wireCommercialContextModel(data.commercialContextModel);
     wireLifecycleFlow(data.lifecycle);
-    populateUsage(data.usageRows);
-    populateInvoices(data.invoiceRows);
-    wireScenarioToggles(data.scenarios);
+    populateUsageCaptureEvents(data.usageCaptureEvents || []);
+    populateBillingUsage(data.billingUsageRecords || []);
+    populateBillingContext(data.billingActiveContext || null);
+    populateBillingCharges(data.billingCharges || []);
+    populateBillRun(data.billRun || null);
+    populateBillRunCharges(
+      data.billingCharges || [],
+      data.billRun ? data.billRun.period : null
+    );
+    populateInvoicePreview(data.invoicePreview || null);
+    wireBillRunToggle(data.billRun ? data.billRun.status : "Preview");
     wirePresentationNav();
   });
 })();

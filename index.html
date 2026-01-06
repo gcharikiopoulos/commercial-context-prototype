@@ -3,15 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>From Quote to Invoice: Deterministic Billing at LILT</title>
+    <title>Foundations for Accurate Quoting, Invoicing, and Payments</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header>
-      <h1>From Quote to Invoice: Deterministic Billing at LILT</h1>
+      <h1>Customer Data Alignment</h1>
       <p>
-        A conceptual model showing how a Commercial Context links account, opportunity,
-        and pricing to make quoting and invoicing deterministic.
+        A conceptual model showing how aligned customer data enables deterministic billing and invoicing.
       </p>
     </header>
 
@@ -21,80 +20,185 @@
 
     <main>
       <section aria-labelledby="lifecycle-flow">
-        <h2 id="lifecycle-flow">Lifecycle Flow</h2>
+        <h2 id="lifecycle-flow">Lifecycle</h2>
         <div class="lifecycle-steps" role="list" aria-label="Lifecycle steps">
           <div class="lifecycle-step" role="listitem" data-step="opportunity">
             <span class="step-marker" aria-hidden="true"></span>
             <div class="step-body">
-              <h3>SFDC Opportunity</h3>
-              <p>Sales identifies the deal and expected commercial terms.</p>
+              <h3>Opportunity (Quote)</h3>
+              <span class="step-annotation">Upstream context</span>
+              <p>
+                Opportunity represents upstream commercial agreement context for the Customer
+                Billing Card (CBC).
+              </p>
             </div>
           </div>
           <div class="lifecycle-step" role="listitem" data-step="commercial-context">
             <span class="step-marker" aria-hidden="true"></span>
             <div class="step-body">
-              <h3>Commercial Context</h3>
-              <p>Account, opportunity, and pricing are copied into a frozen snapshot.</p>
+              <h3>Customer Billing Card</h3>
+              <p>Frozen, authoritative commercial snapshot derived from Opportunities.</p>
             </div>
           </div>
-          <div class="lifecycle-step" role="listitem" data-step="project">
+          <div class="lifecycle-step" role="listitem" data-step="project-creation">
             <span class="step-marker" aria-hidden="true"></span>
             <div class="step-body">
-              <h3>LILT Project</h3>
-              <p>Work begins using the pre-defined commercial linkage.</p>
+              <h3>Project Creation</h3>
+              <span class="step-annotation">Execution container</span>
+              <p>Project creation references an active Customer Billing Card (CBC) and initializes execution.</p>
             </div>
           </div>
           <div class="lifecycle-step" role="listitem" data-step="usage">
             <span class="step-marker" aria-hidden="true"></span>
             <div class="step-body">
-              <h3>Usage</h3>
-              <p>Delivery events and units are captured against the project.</p>
+              <h3>Usage Capture</h3>
+              <p>Usage Events are recorded against the Project as immutable execution facts.</p>
             </div>
           </div>
           <div class="lifecycle-step" role="listitem" data-step="invoice">
             <span class="step-marker" aria-hidden="true"></span>
             <div class="step-body">
-              <h3>Invoice</h3>
-              <p>Billing is generated directly from usage and agreed terms.</p>
+              <h3>Billing &amp; Invoicing</h3>
+              <p>Billing derives Charges from Usage Events and the active Customer Billing Card (CBC); Invoicing assembles invoices from Charges.</p>
             </div>
           </div>
         </div>
+        <div class="section-divider" aria-hidden="true">
+          <span class="section-divider-line"></span>
+        </div>
         <aside aria-live="polite">
           <h3>Lifecycle Detail</h3>
-          <p id="lifecycle-detail">Select a step to see what happens at that point.</p>
+          <p id="lifecycle-detail">Lifecycle detail describes the active step.</p>
         </aside>
       </section>
 
+      
+
       <section aria-labelledby="commercial-context">
-        <h2 id="commercial-context">Commercial Context</h2>
-        <article id="context-card">
-          <h3>Commercial Context Lineage</h3>
+        <h2 id="commercial-context">Customer Billing Card</h2>
+        <article id="context-card" class="section-panel">
+          <p class="section-subtitle">
+            Represents the frozen, authoritative commercial snapshot derived from Opportunities.
+          </p>
           <div class="cc-visual">
-            <div class="account-spine">
-              <div class="account-label">
-                <span>Salesforce Account</span>
-                <strong id="account-name">Account Name</strong>
-              </div>
-              <div class="spine-line" aria-hidden="true"></div>
-              <p class="spine-note">Single-account determinism from opportunities to projects.</p>
-            </div>
             <div class="cc-visual-grid">
               <section class="opportunity-column">
-                <h4>Opportunities (<span class="column-note">Closed Won opportunities define commercial meaning.</span>)</h4>
+                <h4>
+                  Opportunities (<span class="column-note">Origins are equivalent; both can create Customer Billing Cards (CBCs) with identical behavior.</span>)
+                </h4>
                 <div id="opportunity-cards" class="card-stack" role="list"></div>
               </section>
               <section class="context-column">
-                <h4>Commercial Context Versions (<span class="column-note">Only one CC is active at a time. New opps create new versions.</span>)</h4>
+                <h4>Customer Billing Card Versions (<span class="column-note">Only one Customer Billing Card (CBC) is active at a time. New Opportunities create new versions.</span>)</h4>
                 <div id="cc-versions" class="card-stack" role="list"></div>
               </section>
             </div>
           </div>
         </article>
       </section>
+
+      <section aria-labelledby="project-creation">
+        <h2 id="project-creation">Project Creation</h2>
+        <p class="section-subtitle">
+          Defines the execution container; an active Customer Billing Card (CBC) serves as the gate.
+        </p>
+        <article class="section-panel project-creation-panel">
+          <div class="project-creation-grid">
+            <div class="cbc-eligibility">
+              <div class="cbc-check-card">
+                <div class="cbc-check-header">
+                  <h3>Customer Billing Card (CBC) eligibility gate</h3>
+                  <span class="status status-checked">Gate only</span>
+                </div>
+                <p>
+                  An active Customer Billing Card (CBC) is required for Project creation.
+                </p>
+                <p class="cbc-check-note">No pricing or Customer Billing Card (CBC) version data is copied into the Project.</p>
+              </div>
+            </div>
+            <div class="card project-card" role="group" aria-label="Project card">
+              <div class="card-header">
+                <h3>Project</h3>
+                <span class="status">Active</span>
+              </div>
+              <dl class="project-meta">
+                <div>
+                  <dt>Project ID</dt>
+                  <dd>PRJ-4012</dd>
+                </div>
+                <div>
+                  <dt>Name</dt>
+                  <dd>Acme Global Support</dd>
+                </div>
+                <div>
+                  <dt>Execution status</dt>
+                  <dd>Active</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <div class="project-notes">
+            <p>
+              Project creation requires an active Customer Billing Card (CBC) at that time. The
+              Customer Billing Card (CBC) serves as a gate only.
+            </p>
+            <p>
+              Projects are execution containers and are not tightly bound to a specific Customer
+              Billing Card (CBC) version.<br />Billing consults the active Customer Billing Card (CBC)
+              later, during charge creation.<br />Usage capture
+              remains fully decoupled.
+            </p>
+          </div>
+          <div class="section-divider" aria-hidden="true">
+            <span class="section-divider-line"></span>
+          </div>
+          <h3 class="section-break-heading">Linguist Payout Offer</h3>
+          <div class="payout-offer-layout">
+            <p>
+              The payout offer is calculated automatically during project setup using expected
+              project revenue from the Customer Billing Card (CBC) and a 75% target contribution margin.<br />The resulting amount is offered
+              to a linguist.
+            </p>
+            <div class="payout-offer-card" role="group" aria-label="Linguist payout offer">
+              <div class="payout-offer-header">
+                <h4>Linguist Payout Offer</h4>
+                <span class="status">Active</span>
+              </div>
+              <dl class="payout-offer-meta">
+                <div>
+                  <dt>Offer ID</dt>
+                  <dd>PO-7721</dd>
+                </div>
+                <div>
+                  <dt>Project</dt>
+                  <dd>PRJ-4012 - Acme Global Support</dd>
+                </div>
+                <div>
+                  <dt>Estimated revenue</dt>
+                  <dd>$100</dd>
+                </div>
+                <div>
+                  <dt>Target contribution margin</dt>
+                  <dd>75%</dd>
+                </div>
+                <div>
+                  <dt>Offered payout amount</dt>
+                  <dd>$35</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <p>
+            The payout offer is independent of Usage Events and Invoicing cycles.<br />The offered
+            amount is stored once accepted.
+          </p>
+        </article>
+      </section>
+
       <section aria-labelledby="usage-capture">
         <h2 id="usage-capture">Usage Capture</h2>
         <p class="section-subtitle">
-          Objective service usage recorded at execution time, independent of billing.
+          Defines immutable Usage Events recorded at execution time, independent of Billing.
         </p>
         <div class="usage-capture-grid">
           <div class="usage-column usage-actions">
@@ -102,65 +206,49 @@
             <ul class="usage-action-list" role="list">
               <li class="usage-action-card">File translation</li>
               <li class="usage-action-card">MT request</li>
-              <li class="usage-action-card">QA job</li>
+              <li class="usage-action-card">QA review</li>
               <li class="usage-action-card">API call</li>
+              <li class="usage-action-card">etc.</li>
             </ul>
           </div>
           <div class="usage-column usage-events">
             <div class="usage-events-header">
               <h3>Usage Events</h3>
-              <span class="usage-badge">Append-only log</span>
+              <span class="usage-badge">Finalized</span>
             </div>
             <table class="usage-events-table">
-              <caption>Recorded usage facts</caption>
+              <caption>Immutable Usage Events recorded at execution time.</caption>
               <thead>
                 <tr>
                   <th scope="col">Timestamp</th>
                   <th scope="col">Service</th>
                   <th scope="col">Unit Type</th>
                   <th scope="col">Quantity</th>
-                  <th scope="col">Project / Job</th>
+                  <th scope="col">Project</th>
                   <th scope="col">Customer</th>
                 </tr>
               </thead>
               <tbody id="usage-capture-rows"></tbody>
             </table>
-            <p class="usage-annotation">Usage events are always recorded and immutable.</p>
-            <p class="usage-annotation secondary">No pricing or billing logic applied here.</p>
-          </div>
-        </div>
-        <div class="usage-decoupling" aria-label="Decoupling cues">
-          <p class="usage-decoupling-title">Independent capture layer</p>
-          <div class="usage-decoupling-grid">
-            <div class="decouple-card">
-              <span class="decouple-label">Billing</span>
-              <span class="decouple-state">Not consulted</span>
-            </div>
-            <div class="decouple-card">
-              <span class="decouple-label">Invoicing</span>
-              <span class="decouple-state">Not consulted</span>
-            </div>
-            <div class="decouple-card">
-              <span class="decouple-label">Commercial interpretation</span>
-              <span class="decouple-state">Not consulted</span>
-            </div>
+            <p class="usage-annotation">Usage Events are recorded regardless of entitlement and are immutable.</p>
+            <p class="usage-annotation secondary">No pricing or Billing logic applies here.</p>
           </div>
         </div>
       </section>
       <section aria-labelledby="billing-derivation">
-        <h2 id="billing-derivation">Billing (Charge Derivation)</h2>
+        <h2 id="billing-derivation">Billing (Charges)</h2>
         <p class="section-subtitle">
-          Billing combines recorded usage with the active Commercial Context to derive charges
-          deterministically.
+          Defines how Charges are derived deterministically from Usage Events and the active Customer
+          Billing Card (CBC).
         </p>
         <div class="billing-grid">
           <article class="billing-panel">
             <div class="billing-panel-header">
-              <h3>Usage Records</h3>
-              <span class="panel-badge">Recorded Usage</span>
+              <h3>Usage Events</h3>
+              <span class="panel-badge">Finalized</span>
             </div>
             <table class="billing-table billing-usage-table">
-              <caption>Immutable usage events captured during service execution.</caption>
+              <caption>Immutable Usage Events recorded during execution.</caption>
               <thead>
                 <tr>
                   <th scope="col">Date</th>
@@ -175,13 +263,13 @@
 
           <article class="billing-panel">
             <div class="billing-panel-header">
-              <h3>Active Commercial Context</h3>
+              <h3>Active Customer Billing Card (CBC)</h3>
               <span class="panel-badge is-active">Active</span>
             </div>
-            <div class="billing-context-card" role="group" aria-label="Active Commercial Context">
+            <div class="billing-context-card" role="group" aria-label="Active Customer Billing Card (CBC)">
               <dl class="context-metadata">
                 <div>
-                  <dt>CC ID</dt>
+                  <dt>Customer Billing Card ID</dt>
                   <dd id="billing-cc-id"></dd>
                 </div>
                 <div>
@@ -198,7 +286,7 @@
                 </div>
               </dl>
               <table class="billing-table billing-pricing-table">
-                <caption>Pricing Snapshot</caption>
+                <caption>Pricing Terms</caption>
                 <thead>
                   <tr>
                     <th scope="col">SKU</th>
@@ -210,22 +298,20 @@
               </table>
             </div>
             <p class="billing-caption">
-              Authoritative commercial interpretation used for billing.
+              Authoritative commercial interpretation used to derive Charges.
             </p>
           </article>
         </div>
 
-        <div class="billing-divider" aria-hidden="true">
-          <span>Inputs</span>
-          <span class="billing-divider-line"></span>
-          <span>Charges</span>
+        <div class="section-divider" aria-hidden="true">
+          <span class="section-divider-line"></span>
         </div>
 
         <article class="billing-output">
           <h3>Charges</h3>
           <table class="billing-table billing-charges-table">
             <caption>
-              Charges derived deterministically from usage and the active Commercial Context.
+              Charges derived deterministically from Usage Events and the active Customer Billing Card (CBC).
             </caption>
             <thead>
               <tr>
@@ -243,18 +329,18 @@
       </section>
       <section aria-labelledby="invoicing-bill-runs">
         <div class="invoicing-title">
-          <h2 id="invoicing-bill-runs">Invoicing (NetSuite Bill Runs)</h2>
-          <span class="system-record">System of Record: NetSuite</span>
+          <h2 id="invoicing-bill-runs">Invoicing (NetSuite)</h2>
+          <span class="system-record">System of Record</span>
         </div>
         <p class="section-subtitle">
-          Invoicing groups previously calculated charges into invoices according to billing cycles.
+          Defines how invoices are assembled from Charges in NetSuite.
         </p>
         <div class="invoicing-stack">
           <article class="invoicing-panel bill-run-panel">
             <div class="bill-run-header">
-              <h3>Bill Run</h3>
+              <h3>Invoice Run</h3>
               <div class="bill-run-toggle">
-                <span class="toggle-label">Run Status</span>
+                <span class="toggle-label">Run Phase</span>
                 <button id="bill-run-toggle" class="status-toggle" type="button" aria-pressed="false">
                   Preview
                 </button>
@@ -262,15 +348,15 @@
             </div>
             <dl class="bill-run-meta">
               <div>
-                <dt>Bill Run ID</dt>
+                <dt>Invoice Run ID</dt>
                 <dd id="bill-run-id"></dd>
               </div>
               <div>
-                <dt>Billing Period</dt>
+                <dt>Invoice Period</dt>
                 <dd id="bill-run-period"></dd>
               </div>
               <div>
-                <dt>Billing Cadence</dt>
+                <dt>Invoice Cadence</dt>
                 <dd id="bill-run-cadence"></dd>
               </div>
               <div>
@@ -278,47 +364,44 @@
                 <dd id="bill-run-entity"></dd>
               </div>
               <div>
-                <dt>Run Status</dt>
+                <dt>Run Phase</dt>
                 <dd id="bill-run-status"></dd>
               </div>
             </dl>
             <p class="bill-run-helper">
-              A bill run selects all eligible charges for the period. Bill runs are executed in
-              NetSuite. LILT exports finalized charges to NetSuite via API; NetSuite groups them
-              into invoices.
+              An Invoice Run groups eligible Charges for the period. NetSuite assembles invoices
+              from those Charges.
             </p>
           </article>
 
           <article class="invoicing-panel bill-run-charges-panel">
             <div class="invoicing-panel-header">
-              <h3>Charges Selected for Bill Run</h3>
-              <span class="invoicing-badge">Charges</span>
+              <h3>Charges Selected for Invoice Run</h3>
+              <span class="invoicing-badge">Finalized</span>
             </div>
             <table class="invoicing-table bill-run-charges-table">
-              <caption>Charges are immutable inputs produced by LILT.</caption>
+              <caption>Charges are immutable inputs produced by Billing.</caption>
               <thead>
                 <tr>
                   <th scope="col">Charge ID</th>
                   <th scope="col">Charge Type</th>
                   <th scope="col">Quantity</th>
                   <th scope="col">Charge Amount</th>
-                  <th scope="col">Billing Period</th>
+                  <th scope="col">Invoice Period</th>
                   <th scope="col">Source</th>
                 </tr>
               </thead>
               <tbody id="bill-run-charge-rows"></tbody>
             </table>
             <p class="invoicing-annotation">
-              All charges belong to the same account and billing period.
+              All Charges belong to the same account and invoice period.
             </p>
           </article>
 
-          <div class="invoicing-boundary" aria-label="Charges to invoice boundary">
-            Charges (input) -> Invoice assembly (output) - Charges are sent to NetSuite. No pricing
-            or billing logic is executed here.
+          <div class="section-divider" aria-hidden="true">
+            <span class="section-divider-line"></span>
           </div>
-
-          <article class="invoicing-panel invoice-preview" id="invoice-preview-panel">
+          <article class="invoicing-panel invoice-preview" id="invoice-preview-panel" style="margin-top: 0;">
             <div class="invoicing-panel-header">
               <h3>Invoice Preview</h3>
               <span class="invoicing-badge" id="invoice-status-badge">Preview</span>
@@ -364,7 +447,7 @@
               </tfoot>
             </table>
             <p class="invoicing-annotation">
-              Invoice assembled in NetSuite from charges selected by the bill run.
+              Invoice assembled in NetSuite from Charges selected by the Invoice Run.
             </p>
           </article>
         </div>
@@ -380,7 +463,3 @@
     <script src="app.js"></script>
   </body>
 </html>
-
-
-
-

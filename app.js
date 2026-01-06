@@ -57,23 +57,24 @@
     header.className = "pricing-snapshot-header";
 
     var title = document.createElement("h6");
-    title.textContent = "Pricing Snapshot";
+    title.textContent = "Pricing Terms";
     header.appendChild(title);
 
     var lock = document.createElement("span");
     lock.className = "lock-indicator";
-    lock.textContent = "LOCKED";
+    lock.textContent = "Finalized";
     header.appendChild(lock);
     section.appendChild(header);
 
     var helper = document.createElement("p");
     helper.className = "snapshot-helper";
-    helper.textContent = "Prices snapshotted at CC creation time";
+    helper.textContent =
+      "Customer Billing Card (CBC) pricing captured at creation time.";
     section.appendChild(helper);
 
     var table = document.createElement("table");
     table.className = "snapshot-table";
-    table.setAttribute("aria-label", "Pricing snapshot");
+    table.setAttribute("aria-label", "Pricing Terms");
 
     var thead = document.createElement("thead");
     var headRow = document.createElement("tr");
@@ -156,15 +157,16 @@
     return toIsoDate(date);
   }
 
-  // Render the Commercial Context creation model and bindings.
+  // Render the Customer Billing Card creation model and bindings.
   function wireCommercialContextModel(model) {
-    var accountName = document.getElementById("account-name");
     var opportunityCards = document.getElementById("opportunity-cards");
     var ccVersions = document.getElementById("cc-versions");
     var lineageText = document.getElementById("lineage-text");
     var activeOppId = null;
+    var visibleOppCount = 1;
+    var activeOppIndex = -1;
 
-    if (!accountName || !opportunityCards || !ccVersions) {
+    if (!opportunityCards || !ccVersions) {
       return;
     }
 
@@ -186,9 +188,32 @@
       })[0];
     }
 
+    function activateOpportunity(index) {
+      var opp = model.opportunities[index];
+      if (!opp) {
+        return;
+      }
+
+      activeOppId = opp.id;
+      activeOppIndex = index;
+      visibleOppCount = Math.max(1, index + 2);
+
+      model.opportunities.forEach(function (item, idx) {
+        if (idx <= index) {
+          item.stage = "Closed Won";
+        } else {
+          item.stage = "Open";
+        }
+      });
+
+      renderAll();
+    }
+
     function renderOpportunities() {
       clear(opportunityCards);
-      model.opportunities.forEach(function (opp) {
+      model.opportunities.forEach(function (opp, index) {
+        var isHidden = index >= visibleOppCount;
+        var originLabel = opp.origin || "Sales-led";
         var card = document.createElement("div");
         card.className = "card opp-card";
         card.setAttribute("role", "button");
@@ -198,32 +223,40 @@
         card.setAttribute("aria-pressed", opp.id === activeOppId ? "true" : "false");
         card.classList.toggle("is-active", opp.id === activeOppId);
         card.classList.toggle("is-muted", activeOppId && opp.id !== activeOppId);
+        card.classList.toggle("is-hidden", isHidden);
+        card.setAttribute("aria-hidden", isHidden ? "true" : "false");
 
         card.innerHTML =
           '<div class="card-header">' +
           "<h5>" +
           opp.label +
           "</h5>" +
+          '<div class="card-badges">' +
           '<span class="status">' +
           opp.stage +
           "</span>" +
+          '<span class="origin-badge" aria-label="Origin ' +
+          originLabel +
+          '">' +
+          originLabel +
+          "</span>" +
+          "</div>" +
           "</div>" +
           '<p class="card-meta">Close date: ' +
           opp.closeDate +
           "</p>";
 
-        function applyOpportunity() {
-          activeOppId = opp.id;
-          renderAll();
+        if (!isHidden) {
+          card.addEventListener("click", function () {
+            activateOpportunity(index);
+          });
+          card.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              activateOpportunity(index);
+            }
+          });
         }
-
-        card.addEventListener("click", applyOpportunity);
-        card.addEventListener("keydown", function (event) {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            applyOpportunity();
-          }
-        });
 
         opportunityCards.appendChild(card);
       });
@@ -235,6 +268,20 @@
         return opp.id === activeOppId;
       });
       var hasActive = activeOppIndex >= 0;
+
+      if (!hasActive) {
+        var placeholder = document.createElement("div");
+        placeholder.className = "card cc-card is-placeholder";
+        placeholder.setAttribute("role", "listitem");
+        placeholder.setAttribute("aria-live", "polite");
+        placeholder.innerHTML =
+          '<div class="card-header">' +
+          "<h5>Customer Billing Card pending</h5>" +
+          '<span class="status">Inactive</span>' +
+          "</div>" +
+          "<p class=\"card-meta\">CBC-1001 becomes active after Opp-1 closes.</p>";
+        ccVersions.appendChild(placeholder);
+      }
 
       model.ccVersions.forEach(function (cc, index) {
         var isActive = hasActive && index === activeOppIndex;
@@ -262,7 +309,7 @@
           cc.id +
           "</h5>" +
           '<span class="status">' +
-          (isActive ? "Active" : "Expired") +
+          (isActive ? "Active" : "Inactive") +
           "</span>" +
           "</div>" +
           "<dl>" +
@@ -288,14 +335,11 @@
       var activeOpp = findOppById(activeOppId);
       if (lineageText && activeOpp) {
         lineageText.textContent =
-          "Derived from " + activeOpp.label + ". Used for lineage, not billing execution.";
+          "Derived from " + activeOpp.label + ". Used for lineage, not Billing.";
       }
     }
 
     function renderAll() {
-      if (accountName) {
-        accountName.textContent = model.account;
-      }
       renderOpportunities();
       renderCCVersions();
       renderLineage();
@@ -408,7 +452,7 @@
   }
 
   function setBillRunStatus(status) {
-    var normalized = status === "Finalized" ? "Finalized" : "Preview";
+    var normalized = status === "Final" ? "Final" : "Preview";
     var toggle = document.getElementById("bill-run-toggle");
     var invoicePanel = document.getElementById("invoice-preview-panel");
     var invoiceBadge = document.getElementById("invoice-status-badge");
@@ -417,17 +461,16 @@
 
     if (toggle) {
       toggle.textContent = normalized;
-      toggle.setAttribute("aria-pressed", normalized === "Finalized");
-      toggle.classList.toggle("is-finalized", normalized === "Finalized");
+      toggle.setAttribute("aria-pressed", normalized === "Final");
+      toggle.classList.toggle("is-finalized", normalized === "Final");
     }
 
     if (invoiceBadge) {
-      invoiceBadge.textContent =
-        normalized === "Finalized" ? "Finalized (Locked)" : "Preview";
+      invoiceBadge.textContent = normalized === "Final" ? "Final" : "Preview";
     }
 
     if (invoicePanel) {
-      invoicePanel.classList.toggle("is-finalized", normalized === "Finalized");
+      invoicePanel.classList.toggle("is-finalized", normalized === "Final");
     }
   }
 
@@ -441,7 +484,7 @@
     setBillRunStatus(status);
 
     toggle.addEventListener("click", function () {
-      status = status === "Preview" ? "Finalized" : "Preview";
+      status = status === "Preview" ? "Final" : "Preview";
       setBillRunStatus(status);
     });
   }
@@ -465,7 +508,7 @@
 
     rows.forEach(function (row, index) {
       var chargeId = "CHG-" + String(index + 1).padStart(4, "0");
-      var source = row.pricingSource || "Billing Engine";
+      var source = row.pricingSource || "Billing";
       tbody.appendChild(
         buildRow([
           chargeId,
@@ -546,8 +589,24 @@
         var heading = section.querySelector("h2");
         var label = heading ? heading.textContent.trim() : "Section " + (idx + 1);
         var button = document.createElement("button");
+        var labelSpan = document.createElement("span");
+        var annotationSpan = null;
         button.type = "button";
-        button.textContent = label;
+        button.className = "nav-tab-button";
+        labelSpan.className = "nav-tab-label";
+        labelSpan.textContent = label;
+        button.appendChild(labelSpan);
+        if (heading && heading.id) {
+          var annotation = document.querySelector(
+            '.lifecycle-step[data-step="' + heading.id + '"] .step-annotation'
+          );
+          if (annotation && annotation.textContent.trim()) {
+            annotationSpan = document.createElement("span");
+            annotationSpan.className = "nav-tab-subtext";
+            annotationSpan.textContent = annotation.textContent.trim();
+            button.appendChild(annotationSpan);
+          }
+        }
         button.setAttribute("role", "tab");
         button.setAttribute("aria-selected", "false");
         button.addEventListener("click", function () {

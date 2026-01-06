@@ -1,29 +1,32 @@
 window.mockData = {
   commercialContextModel: {
-    account: "Apex Global Holdings",
+    account: "Acme Inc.",
     opportunities: [
       {
         id: "opp-1",
         label: "Opp-1",
-        stage: "Closed Won",
-        closeDate: "2024-10-12"
+        stage: "Open",
+        closeDate: "2024-10-12",
+        origin: "Sales-led Quote"
       },
       {
         id: "opp-2",
         label: "Opp-2",
-        stage: "Closed Won",
-        closeDate: "2025-02-03"
+        stage: "Open",
+        closeDate: "2025-02-03",
+        origin: "Self-service Quote"
       },
       {
         id: "opp-3",
         label: "Opp-3",
-        stage: "Closed Won",
-        closeDate: "2025-06-18"
+        stage: "Open",
+        closeDate: "2025-06-18",
+        origin: "Sales-led Quote"
       }
     ],
     ccVersions: [
       {
-        id: "CC-1001",
+        id: "CBC-1001",
         version: "v1",
         effectiveStart: "2024-10-12",
         effectiveEnd: "2025-02-02",
@@ -47,7 +50,7 @@ window.mockData = {
         ]
       },
       {
-        id: "CC-1002",
+        id: "CBC-1002",
         version: "v2",
         effectiveStart: "2025-02-03",
         effectiveEnd: "2025-06-17",
@@ -76,7 +79,7 @@ window.mockData = {
         ]
       },
       {
-        id: "CC-1003",
+        id: "CBC-1003",
         version: "v3",
         effectiveStart: "2025-06-18",
         effectiveEnd: "-",
@@ -123,23 +126,27 @@ window.mockData = {
   lifecycle: [
     {
       id: "opportunity",
-      detail: "Define the deal intent, scope, and expectations before any project exists."
+      detail:
+        "Opportunity is upstream commercial agreement context for the Customer Billing Card (CBC), with quotes originating from self-service or sales-led paths."
     },
     {
       id: "commercial-context",
-      detail: "Copy the account, opportunity, and pricing snapshot into a single commercial anchor."
+      detail:
+        "Customer Billing Card (CBC) is the frozen, authoritative commercial snapshot derived from Opportunities."
     },
     {
-      id: "project",
-      detail: "Launch delivery with a deterministic link back to the agreed commercial context."
+      id: "project-creation",
+      detail:
+        "Project is the execution container; an active Customer Billing Card (CBC) serves as the gate."
     },
     {
       id: "usage",
-      detail: "Capture usage in a consistent format tied to the commercial context and project."
+      detail: "Usage Events are captured as immutable execution facts tied to the Project."
     },
     {
       id: "invoice",
-      detail: "Generate invoices directly from usage and the pricing terms already agreed."
+      detail:
+        "Billing derives Charges from Usage Events and the active Customer Billing Card (CBC); Invoicing assembles invoices from Charges."
     }
   ],
   billingUsageRecords: [
@@ -170,15 +177,15 @@ window.mockData = {
       service: "MT request",
       unitType: "Segments",
       quantity: "1,240",
-      jobId: "Job-MT-552",
+      jobId: "Project-MT-552",
       customerId: "CUST-2049"
     },
     {
       timestamp: "2025-03-18 10:02:07",
-      service: "QA job",
+      service: "QA review",
       unitType: "Pages",
       quantity: "18",
-      jobId: "QA-7701",
+      jobId: "Project-QA-7701",
       customerId: "CUST-2049"
     },
     {
@@ -186,7 +193,7 @@ window.mockData = {
       service: "API call",
       unitType: "Requests",
       quantity: "42",
-      jobId: "API-9118",
+      jobId: "Project-API-9118",
       customerId: "CUST-2049"
     },
     {
@@ -199,7 +206,7 @@ window.mockData = {
     }
   ],
   billingActiveContext: {
-    id: "CC-1003",
+    id: "CBC-1003",
     version: "v3",
     status: "Active",
     effectivePeriod: "2025-06-18 to Present",
@@ -223,7 +230,7 @@ window.mockData = {
       quantity: "10,000 words",
       unitPrice: "$0.08",
       amount: "$800.00",
-      pricingSource: "CC v3"
+      pricingSource: "CBC-v3"
     },
     {
       chargeType: "MT-ADV",
@@ -231,7 +238,7 @@ window.mockData = {
       quantity: "20,000 words",
       unitPrice: "$0.02",
       amount: "$400.00",
-      pricingSource: "CC v3"
+      pricingSource: "CBC-v3"
     }
   ],
   billRun: {
@@ -242,9 +249,9 @@ window.mockData = {
     status: "Preview"
   },
   invoicePreview: {
-    number: "INV-2025-01 (Preview)",
+    number: "INV-2025-01",
     date: "Feb 2, 2025",
-    customer: "Apex Global Holdings",
+    customer: "Acme Inc.",
     entity: "Lilt, Inc.",
     lineItems: [
       {

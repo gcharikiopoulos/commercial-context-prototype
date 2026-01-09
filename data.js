@@ -127,7 +127,7 @@ window.mockData = {
     {
       id: "opportunity",
       detail:
-        "Opportunity is upstream commercial agreement context for the Customer Billing Card (CBC), with quotes originating from self-service or sales-led paths."
+        "Opportunity is upstream commercial agreement context for the Customer Billing Card (CBC). CBCs can derive from one or multiple Opportunities that are consolidated into a signle commercial snapshot."
     },
     {
       id: "commercial-context",

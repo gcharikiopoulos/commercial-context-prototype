@@ -525,17 +525,6 @@ section[aria-labelledby="commercial-context"] .status {
   color: var(--color-text-muted);
 }
 
-section[aria-labelledby="commercial-context"] .origin-badge {
-  font-size: 0.68rem;
-  letter-spacing: 0.02em;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: #f7f3fd;
-  color: var(--color-text-soft);
-  border: 1px solid var(--color-border);
-  white-space: nowrap;
-}
-
 section[aria-labelledby="commercial-context"] .opp-card.is-muted {
   opacity: 0.55;
 }
@@ -708,7 +697,6 @@ section[aria-labelledby="commercial-context"] .apply-button {
 
 section[aria-labelledby="commercial-context"] .column-note {
   display: inline-block;
-  margin-left: 6px;
   font-size: 0.85rem;
   font-weight: normal;
   color: var(--color-warning);

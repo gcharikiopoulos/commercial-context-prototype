@@ -213,7 +213,6 @@
       clear(opportunityCards);
       model.opportunities.forEach(function (opp, index) {
         var isHidden = index >= visibleOppCount;
-        var originLabel = opp.origin || "Sales-led";
         var card = document.createElement("div");
         card.className = "card opp-card";
         card.setAttribute("role", "button");
@@ -234,11 +233,6 @@
           '<div class="card-badges">' +
           '<span class="status">' +
           opp.stage +
-          "</span>" +
-          '<span class="origin-badge" aria-label="Origin ' +
-          originLabel +
-          '">' +
-          originLabel +
           "</span>" +
           "</div>" +
           "</div>" +

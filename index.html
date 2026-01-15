@@ -25,7 +25,7 @@
           <div class="lifecycle-step" role="listitem" data-step="opportunity">
             <span class="step-marker" aria-hidden="true"></span>
             <div class="step-body">
-              <h3>Opportunity (Quote)</h3>
+              <h3>Opportunity</h3>
               <span class="step-annotation">Upstream context</span>
               <p>
                 Opportunity represents upstream commercial agreement context for the Customer
@@ -43,7 +43,7 @@
           <div class="lifecycle-step" role="listitem" data-step="project-creation">
             <span class="step-marker" aria-hidden="true"></span>
             <div class="step-body">
-              <h3>Project Creation</h3>
+              <h3>Project Creation (&amp; Quotes)</h3>
               <span class="step-annotation">incl. Linguist Payout Offer</span>
               <p>Project creation references an active Customer Billing Card (CBC) and initializes execution.</p>
             </div>
@@ -100,23 +100,29 @@
       <section aria-labelledby="project-creation">
         <h2 id="project-creation">Project Quoting &amp; Creation</h2>
         <p class="section-subtitle">
-          Defines the execution container; an active Customer Billing Card (CBC) serves as the gate.
+          Defines the work execution container; the active Customer Billing Card (CBC) is attached.
         </p>
         <article class="section-panel project-creation-panel">
           <div class="project-creation-grid">
             <div class="cbc-eligibility">
               <div class="cbc-check-card">
                 <div class="cbc-check-header">
-                  <h3>Customer Billing Card (CBC) eligibility gate</h3>
-                  <span class="status status-checked">Gate only</span>
+                  <h3>Customer Billing Card (CBC)</h3>
                 </div>
                 <p>
-                  An active Customer Billing Card (CBC) is required for Project creation.
+                  The currently active Customer Billing Card (CBC)<br />is required for <strong>Quote</strong> creation.
                 </p>
                 <p>
-                  <strong>A project quote can be generated based on the CBC pricing terms.</strong>
+                  <strong>BEFORE:</strong><br />
+                  Projects were mapped to Opportunities at billing stage to derive pricing and other data.<br />
+                  Automation not always possible, manual intervention required.
                 </p>
-                <p class="cbc-check-note">No pricing or Customer Billing Card (CBC) version data is copied into the Project.</p>
+                <p>
+                  <strong>AFTER:</strong><br />
+                  Projects are mapped to the active Customer Billing Card (CBC) at creation time.<br />
+                  Automation possible, manual intervention not required.
+                </p>
+                <p class="cbc-check-note">CBC version is attached to Project<br />(no pricing or other data is copied into the Project)</p>
               </div>
             </div>
             <div class="card project-card" role="group" aria-label="Project card">
@@ -137,20 +143,14 @@
                   <dt>Execution status</dt>
                   <dd>Active</dd>
                 </div>
+                <div>
+                  <dt>Billing Card Version</dt>
+                  <dd>v1</dd>
+                </div>
               </dl>
             </div>
           </div>
           <div class="project-notes">
-            <p>
-              Project creation requires an active Customer Billing Card (CBC) at that time. The
-              Customer Billing Card (CBC) serves as a gate only.
-            </p>
-            <p>
-              Projects are execution containers and are not tightly bound to a specific Customer
-              Billing Card (CBC) version.<br />Billing consults the active Customer Billing Card (CBC)
-              later, during charge creation.<br />Usage capture
-              remains fully decoupled.
-            </p>
           </div>
           <div class="section-divider" aria-hidden="true">
             <span class="section-divider-line"></span>
@@ -158,9 +158,10 @@
           <h3 class="section-break-heading">Linguist Payout Offer</h3>
           <div class="payout-offer-layout">
             <p>
-              The payout offer is calculated automatically during project setup using expected
-              project revenue from the Customer Billing Card (CBC) and a 75% target contribution margin.<br />The resulting amount is offered
-              to a linguist.
+              The payout offer can be calculated automatically during project setup using expected
+              project revenue from the Customer Billing Card (CBC) and a 75% target contribution margin.<br /><br />
+              It becomes possible to present linguists with a payout offer at project start time,
+              independent of usage events and invoicing cycles.
             </p>
             <div class="payout-offer-card" role="group" aria-label="Linguist payout offer">
               <div class="payout-offer-header">
@@ -191,10 +192,6 @@
               </dl>
             </div>
           </div>
-          <p>
-            The payout offer is independent of Usage Events and Invoicing cycles.<br />The offered
-            amount is stored once accepted.
-          </p>
         </article>
       </section>
 
@@ -219,12 +216,13 @@
               <h3>Usage Events</h3>
               <span class="usage-badge">Finalized</span>
             </div>
-            <table class="usage-events-table">
+            <table class="usage-events-table" style="margin-bottom: 20px;">
               <caption>Immutable Usage Events recorded at execution time.</caption>
               <thead>
                 <tr>
                   <th scope="col">Timestamp</th>
                   <th scope="col">Service</th>
+                  <th scope="col">Product SKU</th>
                   <th scope="col">Unit Type</th>
                   <th scope="col">Quantity</th>
                   <th scope="col">Project</th>
@@ -233,7 +231,7 @@
               </thead>
               <tbody id="usage-capture-rows"></tbody>
             </table>
-            <p class="usage-annotation">Usage Events are recorded regardless of entitlement and are immutable.</p>
+            <p class="usage-annotation secondary">Usage Events are immutable.</p>
             <p class="usage-annotation secondary">No pricing or Billing logic applies here.</p>
           </div>
         </div>
@@ -254,10 +252,13 @@
               <caption>Immutable Usage Events recorded during execution.</caption>
               <thead>
                 <tr>
-                  <th scope="col">Date</th>
+                  <th scope="col">Timestamp</th>
                   <th scope="col">Service</th>
-                  <th scope="col">Units</th>
+                  <th scope="col">Product SKU</th>
                   <th scope="col">Unit Type</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Project</th>
+                  <th scope="col">Customer</th>
                 </tr>
               </thead>
               <tbody id="billing-usage-rows"></tbody>

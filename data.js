@@ -151,22 +151,9 @@ window.mockData = {
   ],
   billingUsageRecords: [
     {
-      date: "2025-07-02",
-      service: "Translation",
-      units: "10,000",
-      unitType: "Words"
-    },
-    {
-      date: "2025-07-02",
-      service: "Machine Translation",
-      units: "20,000",
-      unitType: "Words"
-    }
-  ],
-  usageCaptureEvents: [
-    {
       timestamp: "2025-03-18 09:14:22",
       service: "File translation",
+      sku: "TR-STD",
       unitType: "Words",
       quantity: "8,420",
       jobId: "Project-ALP-014",
@@ -175,6 +162,7 @@ window.mockData = {
     {
       timestamp: "2025-03-18 09:16:41",
       service: "MT request",
+      sku: "MT-ADV",
       unitType: "Segments",
       quantity: "1,240",
       jobId: "Project-MT-552",
@@ -183,6 +171,7 @@ window.mockData = {
     {
       timestamp: "2025-03-18 10:02:07",
       service: "QA review",
+      sku: "QA-HUM",
       unitType: "Pages",
       quantity: "18",
       jobId: "Project-QA-7701",
@@ -191,6 +180,7 @@ window.mockData = {
     {
       timestamp: "2025-03-18 10:15:33",
       service: "API call",
+      sku: "API-REQ",
       unitType: "Requests",
       quantity: "42",
       jobId: "Project-API-9118",
@@ -199,6 +189,54 @@ window.mockData = {
     {
       timestamp: "2025-03-18 11:04:02",
       service: "File translation",
+      sku: "TR-STD",
+      unitType: "Words",
+      quantity: "5,300",
+      jobId: "Project-ALP-015",
+      customerId: "CUST-2049"
+    }
+  ],
+  usageCaptureEvents: [
+    {
+      timestamp: "2025-03-18 09:14:22",
+      service: "File translation",
+      sku: "TR-STD",
+      unitType: "Words",
+      quantity: "8,420",
+      jobId: "Project-ALP-014",
+      customerId: "CUST-2049"
+    },
+    {
+      timestamp: "2025-03-18 09:16:41",
+      service: "MT request",
+      sku: "MT-ADV",
+      unitType: "Segments",
+      quantity: "1,240",
+      jobId: "Project-MT-552",
+      customerId: "CUST-2049"
+    },
+    {
+      timestamp: "2025-03-18 10:02:07",
+      service: "QA review",
+      sku: "QA-HUM",
+      unitType: "Pages",
+      quantity: "18",
+      jobId: "Project-QA-7701",
+      customerId: "CUST-2049"
+    },
+    {
+      timestamp: "2025-03-18 10:15:33",
+      service: "API call",
+      sku: "API-REQ",
+      unitType: "Requests",
+      quantity: "42",
+      jobId: "Project-API-9118",
+      customerId: "CUST-2049"
+    },
+    {
+      timestamp: "2025-03-18 11:04:02",
+      service: "File translation",
+      sku: "TR-STD",
       unitType: "Words",
       quantity: "5,300",
       jobId: "Project-ALP-015",

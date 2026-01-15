@@ -383,7 +383,17 @@
     }
 
     rows.forEach(function (row) {
-      tbody.appendChild(buildRow([row.date, row.service, row.units, row.unitType]));
+      tbody.appendChild(
+        buildRow([
+          row.timestamp,
+          row.service,
+          row.sku,
+          row.unitType,
+          row.quantity,
+          row.jobId,
+          row.customerId
+        ])
+      );
     });
   }
 
@@ -398,6 +408,7 @@
         buildRow([
           event.timestamp,
           event.service,
+          event.sku,
           event.unitType,
           event.quantity,
           event.jobId,
@@ -420,7 +431,9 @@
 
     if (pricingBody && context.pricingSnapshot) {
       context.pricingSnapshot.forEach(function (item) {
-        pricingBody.appendChild(buildRow([item.sku, item.unitPrice, item.unit]));
+        pricingBody.appendChild(
+          buildRow([item.sku, item.unitPrice, item.unit])
+        );
       });
     }
   }

@@ -168,7 +168,7 @@ window.mockData = {
       jobId: "Project-MT-552",
       customerId: "CUST-2049"
     },
-    {
+    /*{
       timestamp: "2025-03-18 10:02:07",
       service: "QA review",
       sku: "QA-HUM",
@@ -194,7 +194,7 @@ window.mockData = {
       quantity: "5,300",
       jobId: "Project-ALP-015",
       customerId: "CUST-2049"
-    }
+    }*/
   ],
   usageCaptureEvents: [
     {
@@ -265,17 +265,17 @@ window.mockData = {
     {
       chargeType: "TR-STD",
       usageReference: "Translation",
-      quantity: "10,000 words",
+      quantity: "8,420 words",
       unitPrice: "$0.08",
-      amount: "$800.00",
+      amount: "$673.60",
       pricingSource: "CBC-v3"
     },
     {
       chargeType: "MT-ADV",
       usageReference: "Machine Translation",
-      quantity: "20,000 words",
+      quantity: "1,240 segments",
       unitPrice: "$0.02",
-      amount: "$400.00",
+      amount: "$24.80",
       pricingSource: "CBC-v3"
     }
   ],
@@ -295,19 +295,19 @@ window.mockData = {
       {
         item: "Translation",
         description: "Translation charge (TR-STD)",
-        quantity: "10,000 words",
+        quantity: "8,420 words",
         unitPrice: "$0.08",
-        lineTotal: "$800.00"
+        lineTotal: "$673.60"
       },
       {
         item: "Machine Translation",
         description: "MT charge (MT-ADV)",
-        quantity: "20,000 words",
+        quantity: "1,240 segments",
         unitPrice: "$0.02",
-        lineTotal: "$400.00"
+        lineTotal: "$24.80"
       }
     ],
-    subtotal: "$1,200.00",
-    total: "$1,200.00"
+    subtotal: "$698.40",
+    total: "$698.40"
   }
 };

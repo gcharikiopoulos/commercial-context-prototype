@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Foundations for Accurate Quoting, Invoicing, and Payments</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Customer Data Alignment</h1>
+      <p>
+        A conceptual model showing how aligned customer data enables deterministic billing and invoicing.
+      </p>
+    </header>
+
+    <div class="presentation-nav" aria-label="Section navigation">
+      <div id="nav-tabs" class="nav-tabs" role="tablist" aria-label="Section tabs"></div>
+    </div>
+
+    <main>
+      <section aria-labelledby="lifecycle-flow">
+        <h2 id="lifecycle-flow">Lifecycle</h2>
+        <div class="lifecycle-steps" role="list" aria-label="Lifecycle steps">
+          <div class="lifecycle-step" role="listitem" data-step="opportunity">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Agreement</h3>
+              <span class="step-annotation">Upstream context</span>
+              <p>
+                Agreement represents upstream commercial agreement context for the Customer
+                Commercial Profile (CP).
+              </p>
+            </div>
+          </div>
+          <div class="lifecycle-step" role="listitem" data-step="commercial-context">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Commercial Profile</h3>
+              <p>Frozen, authoritative commercial snapshot derived from Agreements.</p>
+            </div>
+          </div>
+          <div class="lifecycle-step" role="listitem" data-step="project-creation">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Project Creation (&amp; Quotes)</h3>
+              <span class="step-annotation">incl. Linguist Payout Offer</span>
+              <p>Project creation references an active Commercial Profile (CP) and initializes execution.</p>
+            </div>
+          </div>
+          <div class="lifecycle-step" role="listitem" data-step="usage">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Usage Capture</h3>
+              <p>Usage Records are recorded against the Project as immutable execution facts.</p>
+            </div>
+          </div>
+          <div class="lifecycle-step" role="listitem" data-step="invoice">
+            <span class="step-marker" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Charge Calculation &amp; Invoice Assembly</h3>
+              <p>Charge calculation derives Charges from Usage Records and the active Commercial Profile (CP); invoice assembly builds invoices from Charges.</p>
+            </div>
+          </div>
+        </div>
+        <div class="section-divider" aria-hidden="true">
+          <span class="section-divider-line"></span>
+        </div>
+        <aside aria-live="polite">
+          <h3>Lifecycle Detail</h3>
+          <p id="lifecycle-detail">Lifecycle detail describes the active step.</p>
+        </aside>
+      </section>
+
+      
+
+      <section aria-labelledby="commercial-context">
+        <h2 id="commercial-context">Commercial Profile</h2>
+        <article id="context-card" class="section-panel">
+          <p class="section-subtitle">
+            Represents the frozen, authoritative commercial snapshot derived from Agreements.
+          </p>
+          <div class="cc-visual">
+            <div class="cc-visual-grid">
+              <section class="opportunity-column">
+                <h4>
+                  Agreements
+                </h4>
+                <div id="opportunity-cards" class="card-stack" role="list"></div>
+              </section>
+              <section class="context-column">
+                <h4>Commercial Profile Versions (<span class="column-note">Only one Commercial Profile (CP) is active at a time. New Agreements create new versions.</span>)</h4>
+                <div id="cc-versions" class="card-stack" role="list"></div>
+              </section>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section aria-labelledby="project-creation">
+        <h2 id="project-creation">Project Quoting &amp; Creation</h2>
+        <p class="section-subtitle">
+          Defines the work execution container; the active Commercial Profile (CP) is attached.
+        </p>
+        <article class="section-panel project-creation-panel">
+          <div class="project-creation-grid">
+            <div class="cbc-eligibility">
+              <div class="cbc-check-card">
+                <div class="cbc-check-header">
+                  <h3>Commercial Profile (CP)</h3>
+                </div>
+                <p>
+                  The currently active Commercial Profile (CP)<br />is required for <strong>Quote</strong> creation.
+                </p>
+                <p>
+                  <strong>BEFORE:</strong><br />
+                  Projects were mapped to Agreements at billing stage to derive rates and other data.<br />
+                  Automation not always possible, manual intervention required.
+                </p>
+                <p>
+                  <strong>AFTER:</strong><br />
+                  Projects are mapped to the active Commercial Profile (CP) at creation time.<br />
+                  Automation possible, manual intervention not required.
+                </p>
+                <p class="cbc-check-note">CP version is attached to Project<br />(no pricing or other data is copied into the Project)</p>
+              </div>
+            </div>
+            <div class="card project-card" role="group" aria-label="Project card">
+              <div class="card-header">
+                <h3>Project</h3>
+                <span class="status">Active</span>
+              </div>
+              <dl class="project-meta">
+                <div>
+                  <dt>Project ID</dt>
+                  <dd>PRJ-4012</dd>
+                </div>
+                <div>
+                  <dt>Name</dt>
+                  <dd>Example Global Support</dd>
+                </div>
+                <div>
+                  <dt>Execution status</dt>
+                  <dd>Active</dd>
+                </div>
+                <div>
+                  <dt>Profile Version</dt>
+                  <dd>v1</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <div class="project-notes">
+          </div>
+          <div class="section-divider" aria-hidden="true">
+            <span class="section-divider-line"></span>
+          </div>
+          <h3 class="section-break-heading">Linguist Payout Offer</h3>
+          <div class="payout-offer-layout">
+            <p>
+              The payout offer can be calculated automatically during project setup using expected
+              project revenue from the Commercial Profile (CP) and a 75% target contribution margin.<br /><br />
+              It becomes possible to present linguists with a payout offer at project start time,
+              independent of usage events and invoicing cycles.
+            </p>
+            <div class="payout-offer-card" role="group" aria-label="Linguist payout offer">
+              <div class="payout-offer-header">
+                <h4>Linguist Payout Offer</h4>
+                <span class="status">Active</span>
+              </div>
+              <dl class="payout-offer-meta">
+                <div>
+                  <dt>Offer ID</dt>
+                  <dd>PO-7721</dd>
+                </div>
+                <div>
+                  <dt>Project</dt>
+                  <dd>PRJ-4012 - Example Global Support</dd>
+                </div>
+                <div>
+                  <dt>Estimated revenue</dt>
+                  <dd>$100</dd>
+                </div>
+                <div>
+                  <dt>Target contribution margin</dt>
+                  <dd>75%</dd>
+                </div>
+                <div>
+                  <dt>Offered payout amount</dt>
+                  <dd>$35</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section aria-labelledby="usage-capture">
+        <h2 id="usage-capture">Usage Capture</h2>
+        <p class="section-subtitle">
+          Defines immutable Usage Records recorded at execution time, independent of charge calculation.
+        </p>
+        <div class="usage-capture-grid">
+          <div class="usage-column usage-actions">
+            <h3>User / System Actions</h3>
+            <ul class="usage-action-list" role="list">
+              <li class="usage-action-card">File translation</li>
+              <li class="usage-action-card">MT request</li>
+              <li class="usage-action-card">QA review</li>
+              <li class="usage-action-card">API call</li>
+              <li class="usage-action-card">etc.</li>
+            </ul>
+          </div>
+          <div class="usage-column usage-events">
+            <div class="usage-events-header">
+              <h3>Usage Records</h3>
+              <span class="usage-badge">Finalized</span>
+            </div>
+            <table class="usage-events-table" style="margin-bottom: 20px;">
+              <caption>Immutable Usage Records recorded at execution time.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Timestamp</th>
+                  <th scope="col">Service</th>
+                  <th scope="col">Product SKU</th>
+                  <th scope="col">Unit Type</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Project</th>
+                  <th scope="col">Customer</th>
+                </tr>
+              </thead>
+              <tbody id="usage-capture-rows"></tbody>
+            </table>
+            <p class="usage-annotation secondary">Usage Records are immutable.</p>
+            <p class="usage-annotation secondary">No pricing or charge logic applies here.</p>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="billing-derivation">
+        <h2 id="billing-derivation">Charge Calculation (Charges)</h2>
+        <p class="section-subtitle">
+          Defines how Charges are derived deterministically from Usage Records and the active Commercial
+          Profile (CP).
+        </p>
+        <div class="billing-grid">
+          <article class="billing-panel">
+            <div class="billing-panel-header">
+              <h3>Usage Records</h3>
+              <span class="panel-badge">Finalized</span>
+            </div>
+            <table class="billing-table billing-usage-table">
+              <caption>Immutable Usage Records recorded during execution.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Timestamp</th>
+                  <th scope="col">Service</th>
+                  <th scope="col">Product SKU</th>
+                  <th scope="col">Unit Type</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Project</th>
+                  <th scope="col">Customer</th>
+                </tr>
+              </thead>
+              <tbody id="billing-usage-rows"></tbody>
+            </table>
+          </article>
+
+          <article class="billing-panel">
+            <div class="billing-panel-header">
+              <h3>Active Commercial Profile (CP)</h3>
+              <span class="panel-badge is-active">Active</span>
+            </div>
+            <div class="billing-context-card" role="group" aria-label="Active Commercial Profile (CP)">
+              <dl class="context-metadata">
+                <div>
+                  <dt>Commercial Profile ID</dt>
+                  <dd id="billing-cc-id"></dd>
+                </div>
+                <div>
+                  <dt>Version</dt>
+                  <dd id="billing-cc-version"></dd>
+                </div>
+                <div>
+                  <dt>Status</dt>
+                  <dd id="billing-cc-status"></dd>
+                </div>
+                <div>
+                  <dt>Effective period</dt>
+                  <dd id="billing-cc-period"></dd>
+                </div>
+              </dl>
+              <table class="billing-table billing-pricing-table">
+                <caption>Pricing Terms</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">SKU</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Unit</th>
+                  </tr>
+                </thead>
+                <tbody id="billing-pricing-rows"></tbody>
+              </table>
+            </div>
+            <p class="billing-caption">
+              Authoritative commercial interpretation used to derive Charges.
+            </p>
+          </article>
+        </div>
+
+        <div class="section-divider" aria-hidden="true">
+          <span class="section-divider-line"></span>
+        </div>
+
+        <article class="billing-output">
+          <h3>Charges</h3>
+          <table class="billing-table billing-charges-table">
+            <caption>
+              Charges derived deterministically from Usage Records and the active Commercial Profile (CP).
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Charge Type</th>
+                <th scope="col">Usage Reference</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Charge Amount</th>
+                <th scope="col">Pricing Source</th>
+              </tr>
+            </thead>
+            <tbody id="billing-charge-rows"></tbody>
+          </table>
+        </article>
+      </section>
+      <section aria-labelledby="invoicing-bill-runs">
+        <div class="invoicing-title">
+          <h2 id="invoicing-bill-runs">Invoice Assembly (ERP)</h2>
+          <span class="system-record">System of Record</span>
+        </div>
+        <p class="section-subtitle">
+          Defines how invoices are assembled from Charges in ERP system.
+        </p>
+        <div class="invoicing-stack">
+          <article class="invoicing-panel bill-run-panel">
+            <div class="bill-run-header">
+              <h3>Invoice Run</h3>
+              <div class="bill-run-toggle">
+                <span class="toggle-label">Run Phase</span>
+                <button id="bill-run-toggle" class="status-toggle" type="button" aria-pressed="false">
+                  Preview
+                </button>
+              </div>
+            </div>
+            <dl class="bill-run-meta">
+              <div>
+                <dt>Invoice Run ID</dt>
+                <dd id="bill-run-id"></dd>
+              </div>
+              <div>
+                <dt>Invoice Period</dt>
+                <dd id="bill-run-period"></dd>
+              </div>
+              <div>
+                <dt>Invoice Cadence</dt>
+                <dd id="bill-run-cadence"></dd>
+              </div>
+              <div>
+                <dt>Invoice Entity</dt>
+                <dd id="bill-run-entity"></dd>
+              </div>
+              <div>
+                <dt>Run Phase</dt>
+                <dd id="bill-run-status"></dd>
+              </div>
+            </dl>
+            <p class="bill-run-helper">
+              An Invoice Run groups eligible Charges for the period. ERP system assembles invoices
+              from those Charges.
+            </p>
+          </article>
+
+          <article class="invoicing-panel bill-run-charges-panel">
+            <div class="invoicing-panel-header">
+              <h3>Charges Selected for Invoice Run</h3>
+              <span class="invoicing-badge">Finalized</span>
+            </div>
+            <table class="invoicing-table bill-run-charges-table">
+              <caption>Charges are immutable inputs produced by charge calculation.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Charge ID</th>
+                  <th scope="col">Charge Type</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Charge Amount</th>
+                  <th scope="col">Invoice Period</th>
+                  <th scope="col">Source</th>
+                </tr>
+              </thead>
+              <tbody id="bill-run-charge-rows"></tbody>
+            </table>
+            <p class="invoicing-annotation">
+              All Charges belong to the same account and invoice period.
+            </p>
+          </article>
+
+          <div class="section-divider" aria-hidden="true">
+            <span class="section-divider-line"></span>
+          </div>
+          <article class="invoicing-panel invoice-preview" id="invoice-preview-panel" style="margin-top: 0;">
+            <div class="invoicing-panel-header">
+              <h3>Invoice Preview</h3>
+              <span class="invoicing-badge" id="invoice-status-badge">Preview</span>
+            </div>
+            <dl class="invoice-meta">
+              <div>
+                <dt>Invoice Number</dt>
+                <dd id="invoice-number"></dd>
+              </div>
+              <div>
+                <dt>Invoice Date</dt>
+                <dd id="invoice-date"></dd>
+              </div>
+              <div>
+                <dt>Customer</dt>
+                <dd id="invoice-customer"></dd>
+              </div>
+              <div>
+                <dt>Invoice Entity</dt>
+                <dd id="invoice-entity"></dd>
+              </div>
+            </dl>
+            <table class="invoicing-table invoice-table">
+              <thead>
+                <tr>
+                  <th scope="col">Line Item</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Unit Price</th>
+                  <th scope="col">Line Total</th>
+                </tr>
+              </thead>
+              <tbody id="invoice-line-rows"></tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row" colspan="4">Invoice Subtotal</th>
+                  <td id="invoice-subtotal"></td>
+                </tr>
+                <tr>
+                  <th scope="row" colspan="4">Invoice Total</th>
+                  <td id="invoice-total"></td>
+                </tr>
+              </tfoot>
+            </table>
+            <p class="invoicing-annotation">
+              Invoice assembled in ERP system from Charges selected by the Invoice Run.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      
+    </main>
+
+    <footer>
+      <p>This is a visualization for high-level stakeholder understanding, not a complete system design.</p>
+    </footer>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
